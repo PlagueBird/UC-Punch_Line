@@ -63,6 +63,7 @@ protected:
 
 
 	virtual void Jump();
+	virtual void StopJumping();
 	virtual void Move(const FInputActionValue& Value);
 
 private:

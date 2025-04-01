@@ -78,12 +78,33 @@ void AAFighterBase::Block()
 
 void AAFighterBase::Jump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Default Jumping"));
+	UE_LOG(LogTemp, Warning, TEXT("Start Jumping Jumping"));
+	if (CanJump())
+	{
+		ACharacter::Jump();  // Calls built-in UE5 jump function
+	}
+}
+
+void AAFighterBase::StopJumping()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Stop Jumping"));
+	ACharacter::StopJumping();
 }
 
 void AAFighterBase::Move(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Default Moving"));
+	FVector2D Movement = Value.Get<FVector2D>();
+
+	if (Movement.SizeSquared() < 0.01f)
+	{
+		Movement = FVector2D::ZeroVector;
+	}
+
+	float xInput = Movement.X * -1;
+
+
+	AddMovementInput(FVector(xInput, 0, 0), Value.GetMagnitude());
+	
 }
 
 // Called every frame
@@ -105,6 +126,7 @@ void AAFighterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	{
 		EnhancedInputComponent->BindAction(InputToMove, ETriggerEvent::Triggered, this, &AAFighterBase::Move);
 		EnhancedInputComponent->BindAction(InputToJump, ETriggerEvent::Triggered, this, &AAFighterBase::Jump);
+		EnhancedInputComponent->BindAction(InputToJump, ETriggerEvent::Completed, this, &AAFighterBase::StopJumping);
 		EnhancedInputComponent->BindAction(InputToBlock, ETriggerEvent::Triggered, this, &AAFighterBase::Block);
 		EnhancedInputComponent->BindAction(InputToPunch, ETriggerEvent::Triggered, this, &AAFighterBase::Punch);
 		EnhancedInputComponent->BindAction(InputToKick, ETriggerEvent::Triggered, this, &AAFighterBase::Kick);
