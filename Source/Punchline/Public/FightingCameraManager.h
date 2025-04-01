@@ -32,9 +32,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	float CameraZoomSpeed = 5.0f;
 
+
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:	
 	FVector CalculateCameraPosition(const FVector& Player1Location, const FVector& Player2Location);
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	BP_*/
 };

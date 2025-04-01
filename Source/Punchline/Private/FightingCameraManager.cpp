@@ -31,7 +31,7 @@ void AFightingCameraManager::Tick(float DeltaTime)
 void AFightingCameraManager::UpdateCamera(float DeltaTime)
 {
     Super::UpdateCamera(DeltaTime);
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), BP_PlayerCharacter, PlayerCharacters);    
+	//UGameplayStatics::GetAllActorsOfClass(GetWorld(), BP_PlayerCharacter, PlayerCharacters);    
     // Get player characters
    /* AActor* Player1 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     AActor* Player2 = UGameplayStatics::GetPlayerCharacter(GetWorld(), 1);
