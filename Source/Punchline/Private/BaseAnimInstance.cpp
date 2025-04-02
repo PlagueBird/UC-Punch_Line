@@ -41,3 +41,8 @@ void UBaseAnimInstance::NotifyToEndPunch_Implementation()
 	IsPunching = false;
 	PunchTimerHandle.Invalidate();
 }
+
+void UBaseAnimInstance::NotifyToDie_Implementation()
+{
+	IsDead = true;
+}

@@ -70,11 +70,22 @@ void AAFighterBase::Punch()
 void AAFighterBase::Kick()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Default Kicking"));
+	TakeDamage(50);
 }
 
 void AAFighterBase::Block()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Default Blocking"));
+	AnimInstance->NotifyToDie();
+	Health = 0;
+}
+
+
+void AAFighterBase::Die()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Default Dying"));
+	AnimInstance->NotifyToDie();
+	Health = 0;
 }
 
 void AAFighterBase::Jump()
@@ -96,7 +107,7 @@ void AAFighterBase::Move(const FInputActionValue& Value)
 {
 	FVector2D Movement = Value.Get<FVector2D>();
 
-	if (Movement.SizeSquared() < 0.01f)
+	if (Movement.SizeSquared() < 0.01f || Health <= 0)
 	{
 		Movement = FVector2D::ZeroVector;
 	}
@@ -113,6 +124,15 @@ void AAFighterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Health <= 0) {
+		Die();
+		return;
+	}
+}
+
+void AAFighterBase::TakeDamage(int Amount)
+{
+	Health -= Amount;
 }
 
 // Called to bind functionality to input

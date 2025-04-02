@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
 	void NotifyToEndKick();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
+	void NotifyToDie();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* PunchMontage;
@@ -40,6 +43,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool IsBlocking = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool IsDead = false;
 
 private:
 	FTimerHandle PunchTimerHandle;

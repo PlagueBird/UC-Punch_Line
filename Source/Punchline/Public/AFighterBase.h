@@ -48,7 +48,7 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	float Health;
+	float Health = 100;
 
 	// Can add more stats in the future, but currently not sure
 	// what to add or what we want to do for different characters
@@ -61,11 +61,14 @@ protected:
 	virtual void Punch();
 	virtual void Kick();
 	virtual void Block();
+	virtual void Die();
 
 
 	virtual void Jump();
 	virtual void StopJumping();
 	virtual void Move(const FInputActionValue& Value);
+	virtual void TakeDamage(int Amount);
+
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Animations")
