@@ -62,7 +62,7 @@ void AAFighterBase::Punch()
 		//GetMesh()->GetAnimInstance()->Montage_Play(PunchKickMontage);
 		
 		// Attempting for this to be right
-		AnimInstance->PlayPunchAnimation();
+		AnimInstance->NotifyToPunch();
 		UE_LOG(LogTemp, Warning, TEXT("Punching!"));
 	}
 }

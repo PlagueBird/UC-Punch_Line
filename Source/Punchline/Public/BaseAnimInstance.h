@@ -17,7 +17,17 @@ class PUNCHLINE_API UBaseAnimInstance : public UAnimInstance
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
-	void PlayPunchAnimation();
+	void NotifyToPunch();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
+	void NotifyToEndPunch();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
+	void NotifyToKick();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
+	void NotifyToEndKick();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* PunchMontage;
@@ -25,4 +35,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool IsPunching = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool IsKicking = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	bool IsBlocking = false;
+
+private:
+	FTimerHandle PunchTimerHandle;
+
+	FTimerHandle KickTimerHandle;
+
+	FTimerHandle BlockTimerHandle;
 };
