@@ -5,8 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include <EnhancedInputLibrary.h>
-
+#include <BaseAnimInstance.h>
 #include "AFighterBase.generated.h"
+
 
 
 UCLASS(Blueprintable)
@@ -41,8 +42,8 @@ protected:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Enhanced Input")
 	UInputAction* InputToBlock;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName = "State Machine")
-	TObjectPtr<UAnimInstance> m_StateMachine = nullptr;*/
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Animation")
+	UBaseAnimInstance* AnimInstance;
 
 
 

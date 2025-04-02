@@ -15,17 +15,6 @@ AAFighterBase::AAFighterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//PunchKickMontage = nullptr;
-
-	/*static ConstructorHelpers::FObjectFinder<UAnimMontage> MontageObj(TEXT("/Script/Engine.AnimMontage'/Game/Mutant/Animations/Mutant_Punch_Montage.Mutant_Punch_Montage'"));
-	if (MontageObj.Succeeded())
-	{
-		PunchKickMontage = MontageObj.Object;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Montage found"));
-	}*/
 }
 
 // Called when the game starts or when spawned
@@ -33,9 +22,15 @@ void AAFighterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	AnimInstance = Cast<UBaseAnimInstance>(GetMesh()->GetAnimInstance());
 
-	
+	if (!AnimInstance)
+	{
+		UE_LOG(LogTemp, Error, TEXT("FighterBase: Failed to get BaseAnimInstance!"));
+	}
+
+	// Add Mapping Context
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	if (PlayerController)
 	{
@@ -61,7 +56,13 @@ void AAFighterBase::Punch()
 {
 	if (PunchKickMontage && GetMesh()->GetAnimInstance())
 	{
-		GetMesh()->GetAnimInstance()->Montage_Play(PunchKickMontage);
+		// Currently this is not working, believe it is due to the State Machine overriding 
+		// the animation. Thinking we need to add a new state and make some communication for the
+		// Animation to trigger.
+		//GetMesh()->GetAnimInstance()->Montage_Play(PunchKickMontage);
+		
+		// Attempting for this to be right
+		AnimInstance->PlayPunchAnimation();
 		UE_LOG(LogTemp, Warning, TEXT("Punching!"));
 	}
 }
