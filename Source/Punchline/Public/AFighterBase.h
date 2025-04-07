@@ -45,6 +45,11 @@ protected:
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Animation")
 	UBaseAnimInstance* AnimInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player References")
+	AActor* Hurtbox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Info")
+	bool FacingRight;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
@@ -67,7 +72,8 @@ protected:
 	virtual void Jump();
 	virtual void StopJumping();
 	virtual void Move(const FInputActionValue& Value);
-	virtual void TakeDamage(int Amount);
+
+	
 
 
 private:
@@ -80,5 +86,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	UFUNCTION(BlueprintCallable)
+	virtual void InflictDamage(int Amount);
 };

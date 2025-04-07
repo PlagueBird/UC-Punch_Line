@@ -14,7 +14,8 @@ AAFighterBase::AAFighterBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
+	Hurtbox = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -70,7 +71,7 @@ void AAFighterBase::Punch()
 void AAFighterBase::Kick()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Default Kicking"));
-	TakeDamage(50);
+	InflictDamage(50);
 }
 
 void AAFighterBase::Block()
@@ -130,7 +131,7 @@ void AAFighterBase::Tick(float DeltaTime)
 	}
 }
 
-void AAFighterBase::TakeDamage(int Amount)
+void AAFighterBase::InflictDamage(int Amount)
 {
 	Health -= Amount;
 }
