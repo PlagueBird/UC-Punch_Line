@@ -71,14 +71,22 @@ protected:
 
 	virtual void Jump();
 	virtual void StopJumping();
+	virtual bool CanJump();
+	virtual void Landed(const FHitResult& Hit) override;
 	virtual void Move(const FInputActionValue& Value);
 
+	int JumpCount = 0;
+	int MaxJumpCount = 2;
 	
 
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Animations")
 	UAnimMontage* PunchKickMontage;
+
+	AActor* OtherPlayer;
+
+	void FaceOtherPlayer();
 
 public:	
 	// Called every frame

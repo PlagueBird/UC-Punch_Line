@@ -6,6 +6,7 @@
 #include <EnhancedInputLibrary.h>
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -15,7 +16,17 @@ AAFighterBase::AAFighterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+	FacingRight = true;
+	FighterMappingContext = nullptr;
+	InputToMove = nullptr;
+	InputToJump = nullptr;
+	InputToPunch = nullptr;
+	InputToKick = nullptr;
+	InputToBlock = nullptr;
+	AnimInstance = nullptr;
 	Hurtbox = nullptr;
+	PunchKickMontage = nullptr;
+
 }
 
 // Called when the game starts or when spawned
@@ -50,6 +61,19 @@ void AAFighterBase::BeginPlay()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Player Controller found"));
+	}
+
+
+	TArray<AActor*> Fighters;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAFighterBase::StaticClass(), Fighters);
+
+	for (AActor* Fighter : Fighters)
+	{
+		if (Fighter != this)
+		{
+			OtherPlayer = Fighter;
+			break;
+		}
 	}
 }
 
@@ -91,17 +115,35 @@ void AAFighterBase::Die()
 
 void AAFighterBase::Jump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start Jumping Jumping"));
+	
 	if (CanJump())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Start Jumping Jumping"));
+		JumpCount++;
 		ACharacter::Jump();  // Calls built-in UE5 jump function
 	}
 }
 
 void AAFighterBase::StopJumping()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stop Jumping"));
 	ACharacter::StopJumping();
+}
+
+bool AAFighterBase::CanJump()
+{
+	if (JumpCount < MaxJumpCount)
+	{
+		return true;
+	}
+	
+	return false;
+	
+}
+
+void AAFighterBase::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	JumpCount = 0; // Reset on landing
 }
 
 void AAFighterBase::Move(const FInputActionValue& Value)
@@ -129,6 +171,9 @@ void AAFighterBase::Tick(float DeltaTime)
 		Die();
 		return;
 	}
+
+	// Face the other player
+	FaceOtherPlayer();
 }
 
 void AAFighterBase::InflictDamage(int Amount)
@@ -154,5 +199,33 @@ void AAFighterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(InputToKick, ETriggerEvent::Triggered, this, &AAFighterBase::Kick);
 	}
 
+}
+
+
+void AAFighterBase::FaceOtherPlayer()
+{
+	if (!OtherPlayer) return;
+
+	// Get locations
+	FVector MyLocation = GetActorLocation();
+	FVector OtherLocation = OtherPlayer->GetActorLocation();
+
+	// Get direction to other player
+	FVector Direction = OtherLocation - MyLocation;
+	Direction.Z = 0; // Ignore vertical difference for yaw only
+
+	if (Direction.X < 0)
+	{
+		FacingRight = false;
+	}
+	else {
+		FacingRight = true;
+	}
+
+	// Convert direction to rotation
+	FRotator NewRotation = Direction.Rotation();
+
+	// Set actor rotation to face the other player
+	SetActorRotation(NewRotation);
 }
 
