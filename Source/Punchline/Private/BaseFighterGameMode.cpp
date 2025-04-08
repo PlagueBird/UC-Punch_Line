@@ -15,6 +15,17 @@ void ABaseFighterGameMode::BeginPlay()
 	//FindPlayerStarts();
 
 	InitCameraManager();
+
+	if (FightingUIClass)
+	{
+		FightingUIWidget = CreateWidget<UBaseHealthbar>(GetWorld(), FightingUIClass);
+
+
+		if (FightingUIWidget)
+		{
+			FightingUIWidget->AddToViewport();
+		}
+	}
 }
 
 void ABaseFighterGameMode::PostLogin(APlayerController* NewPlayer)
@@ -28,13 +39,8 @@ void ABaseFighterGameMode::PostLogin(APlayerController* NewPlayer)
 		
 	}
 	
-
-
-	/*if (Players.Num() == 2)
-	{*/
-		SpawnPlayers();
-		//StartRound();
-	//}
+	SpawnPlayers();
+	//StartRound();
 }
 
 void ABaseFighterGameMode::SpawnPlayers()
@@ -71,6 +77,7 @@ void ABaseFighterGameMode::SpawnPlayers()
 	{
 		PlayerController->Possess(PlayerCharacter);
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Player 1 at %s"), *P1SpawnLocation.ToString());
+		PlayerCharacter->SetPlayerIndex(1);  // Set Player Index
 	}
 
 	// --- Spawn Player 2 (Dummy) ---
@@ -86,8 +93,9 @@ void ABaseFighterGameMode::SpawnPlayers()
 
 	if (DummyCharacter)
 	{
-		DummyCharacter->SetActorTickEnabled(false);  // Make it non-responsive
+		//DummyCharacter->SetActorTickEnabled(false);  // Make it non-responsive
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Dummy Character at %s"), *P2SpawnLocation.ToString());
+		DummyCharacter->SetPlayerIndex(2);  // Set Player Index
 	}
 }
 
@@ -129,5 +137,17 @@ void ABaseFighterGameMode::ResetPlayers()
 			Character->SetActorLocation(PlayerStarts[i]->GetActorLocation());
 			Character->SetActorRotation(FRotator(0, (i == 0) ? 90.f : -90.f, 0));
 		}
+	}
+}
+
+void ABaseFighterGameMode::UpdateHealthbars(int PlayerIndex, float Percent)
+{
+	if (FightingUIWidget)
+	{
+		FightingUIWidget->SetPlayerHealth(PlayerIndex, Percent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FightingUIWidget is not initialized!"));
 	}
 }

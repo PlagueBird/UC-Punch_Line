@@ -6,8 +6,9 @@
 #include <EnhancedInputLibrary.h>
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include <Kismet/GameplayStatics.h>
-
+#include <BaseFighterGameMode.h>
 
 
 // Sets default values
@@ -26,7 +27,6 @@ AAFighterBase::AAFighterBase()
 	AnimInstance = nullptr;
 	Hurtbox = nullptr;
 	PunchKickMontage = nullptr;
-
 }
 
 // Called when the game starts or when spawned
@@ -63,7 +63,7 @@ void AAFighterBase::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("No Player Controller found"));
 	}
 
-
+	
 	TArray<AActor*> Fighters;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAFighterBase::StaticClass(), Fighters);
 
@@ -79,7 +79,7 @@ void AAFighterBase::BeginPlay()
 
 void AAFighterBase::Punch()
 {
-	if (PunchKickMontage && GetMesh()->GetAnimInstance())
+	if (GetMesh()->GetAnimInstance())
 	{
 		// Currently this is not working, believe it is due to the State Machine overriding 
 		// the animation. Thinking we need to add a new state and make some communication for the
@@ -94,8 +94,13 @@ void AAFighterBase::Punch()
 
 void AAFighterBase::Kick()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Default Kicking"));
-	InflictDamage(50);
+	if (GetMesh()->GetAnimInstance())
+	{
+		
+		// Attempting for this to be right
+		AnimInstance->NotifyToKick();
+		UE_LOG(LogTemp, Warning, TEXT("Punching!"));
+	}
 }
 
 void AAFighterBase::Block()
@@ -167,11 +172,6 @@ void AAFighterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Health <= 0) {
-		Die();
-		return;
-	}
-
 	// Face the other player
 	FaceOtherPlayer();
 }
@@ -179,6 +179,19 @@ void AAFighterBase::Tick(float DeltaTime)
 void AAFighterBase::InflictDamage(int Amount)
 {
 	Health -= Amount;
+
+	// Update Health Bar 
+	ABaseFighterGameMode* GM = Cast<ABaseFighterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	GM->UpdateHealthbars(PlayerIndex, Health / MaxHealth);
+
+	if (Health <= 0)
+	{
+		Die();
+	}
+	else
+	{
+		// Play hurt animation or sound
+	}
 }
 
 // Called to bind functionality to input
@@ -229,3 +242,7 @@ void AAFighterBase::FaceOtherPlayer()
 	SetActorRotation(NewRotation);
 }
 
+void AAFighterBase::SetPlayerIndex(int Index)
+{
+	PlayerIndex = Index;
+}

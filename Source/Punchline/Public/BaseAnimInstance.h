@@ -36,6 +36,9 @@ public:
 	UAnimMontage* PunchMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* KickMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	bool IsPunching = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")

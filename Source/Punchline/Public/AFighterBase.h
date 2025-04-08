@@ -10,6 +10,7 @@
 
 
 
+
 UCLASS(Blueprintable)
 class PUNCHLINE_API AAFighterBase : public ACharacter
 {
@@ -19,6 +20,15 @@ public:
 	// Sets default values for this character's properties
 	AAFighterBase();
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float Health = 100;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float MaxHealth = 100;
+
+	void SetPlayerIndex(int Index);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -51,13 +61,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Info")
 	bool FacingRight;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
-	float Health = 100;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int PlayerIndex;
+	
 	// Can add more stats in the future, but currently not sure
 	// what to add or what we want to do for different characters
 	// Some ideas: Speed, Jump Height, Overall Damage Modifier
+
 
 
 

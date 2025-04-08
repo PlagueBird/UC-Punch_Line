@@ -6,7 +6,11 @@
 #include "GameFramework/GameMode.h"
 #include <FightingCameraManager.h>
 #include <AFighterBase.h>
+#include <Animation/UMGSequencePlayer.h>
+#include <BaseHealthbar.h>
 #include "BaseFighterGameMode.generated.h"
+
+
 
 
 /**
@@ -26,6 +30,8 @@ public:
 
 	void ResetPlayers();
 
+	void UpdateHealthbars(int PlayerIndex, float Percent);
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -38,6 +44,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<AAFighterBase> FighterBlueprintClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	TSubclassOf<UUserWidget> Healthbar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UBaseHealthbar> FightingUIClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UBaseHealthbar* FightingUIWidget;
 
 private: 
 	TArray<APlayerController*> Players;
