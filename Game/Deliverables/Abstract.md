@@ -1,0 +1,1 @@
+It's difficult to ask someone "what is Street Fighter?" or "what is Mortal Kombat?" and not receive some form of awareness of the fighting game genre. Project Punch-Line is an attempt by students who play fighting games to create a fun and accessible fighting game that both draws in new players while still maintaining that feeling of fulfillment through improvement.
