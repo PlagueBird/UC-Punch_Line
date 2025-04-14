@@ -157,7 +157,7 @@ void AAFighterBase::Kick()
 		
 		// Attempting for this to be right
 		AnimInstance->NotifyToKick();
-		InflictDamage(50);
+		//InflictDamage(50);
 		UE_LOG(LogTemp, Warning, TEXT("Punching!"));
 	}
 }
