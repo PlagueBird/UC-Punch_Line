@@ -2,9 +2,16 @@
 
 
 #include "BaseGameInstance.h"
+#include "Misc/CoreDelegates.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
-#include "Interfaces/OnlineSessionInterface.h"
+#include "BaseFighterGameMode.h"
+
+UBaseGameInstance::UBaseGameInstance() {
+	SearchForSessionsCompletedDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &UBaseGameInstance::SearchForSessionsCompleted);
+}
+
+
 
 void UBaseGameInstance::HostSession() {
 	if (IOnlineSubsystem* onlineSubsystem = IOnlineSubsystem::Get()) {
@@ -24,11 +31,47 @@ void UBaseGameInstance::HostSession() {
 
 			const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 			if (onlineSessionInterface->CreateSession(*localPlayer->GetPreferredUniqueNetId(), FName("Test Game Session"), *sessionSettings)) { //Switch name to NAME_GameSession or make customizable by player
+				//GEnigine->AddOnScreenDebugMessage(0, 30.0f, FColor::Cyan, FString::Printf(TEXT("A session has been created!")));
 				UE_LOG(LogTemp, Warning, TEXT("A session has been created!"));
 			}
 			else {
+				//GEnigine->AddOnScreenDebugMessage(0, 30.0f, FColor::Cyan, FString::Printf(TEXT("A session has failed to be created!")));
 				UE_LOG(LogTemp, Warning, TEXT("A session has failed to be created!"));
 			}
+		}
+	}
+}
+
+void UBaseGameInstance::SearchForSessions() {
+	if (IOnlineSubsystem* onlineSubsystem = IOnlineSubsystem::Get()) {
+		if (IOnlineSessionPtr onlineSessionInterface = onlineSubsystem->GetSessionInterface()) {
+			SearchForSessionsCompletedHandle = onlineSessionInterface->AddOnFindSessionsCompleteDelegate_Handle(SearchForSessionsCompletedDelegate);
+
+			searchSettings = MakeShareable(new FOnlineSessionSearch());
+			searchSettings->bIsLanQuery = false;
+			searchSettings->MaxSearchResults = 5;
+			searchSettings->PingBucketSize = 30;
+			searchSettings->TimeoutInSeconds = 10.0f;
+
+			const ULocalPlayer* localPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+			if (onlineSessionInterface->FindSessions(*localPlayer->GetPreferredUniqueNetId(), searchSettings.ToSharedRef())) {
+				UE_LOG(LogTemp, Warning, TEXT("Search started."));
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("Search failed to start."));
+			}
+		}
+	}
+}
+
+void UBaseGameInstance::SearchForSessionsCompleted(bool _searchCompleted) {
+	if (IOnlineSubsystem* onlineSubsystem = IOnlineSubsystem::Get()) {
+		if (IOnlineSessionPtr onlineSessionInterface = onlineSubsystem->GetSessionInterface()) {
+			onlineSessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(SearchForSessionsCompletedHandle);
+			
+			UE_LOG(LogTemp, Warning, TEXT("Search found  sessions after completing search."), searchSettings->SearchResults.Num());
+
+			if (auto gameMode = Cast<A)
 		}
 	}
 }

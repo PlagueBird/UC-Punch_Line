@@ -5,16 +5,16 @@
 
 ABaseFighterGameMode::ABaseFighterGameMode()
 {
-PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABaseFighterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	//FindPlayerStarts();
 
-	
+
 
 	UE_LOG(LogTemp, Warning, TEXT("Game Mode Begin Play"));
 	UGameplayStatics::CreatePlayer(GetWorld(), 1, true);
@@ -48,9 +48,9 @@ void ABaseFighterGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		Players.Add(NewPlayer);
 		PlayerWins.Add(NewPlayer, 0);
-		
+
 	}
-	
+
 	/*SpawnPlayers();
 	StartRound();*/
 }
@@ -109,13 +109,13 @@ void ABaseFighterGameMode::SpawnPlayers()
 	{
 		if (Player2Controller)
 		{
-			
+
 			Player2Controller->Possess(DummyCharacter);
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("Player 2 Controller not found!"));
 		}
-		
+
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Dummy Character at %s"), *P2SpawnLocation.ToString());
 		DummyCharacter->SetPlayerIndex(2);  // Set Player Index
 	}
@@ -123,7 +123,7 @@ void ABaseFighterGameMode::SpawnPlayers()
 
 void ABaseFighterGameMode::InitCameraManager()
 {
-m_CameraManager = GetWorld()->SpawnActor<AFightingCameraManager>();
+	m_CameraManager = GetWorld()->SpawnActor<AFightingCameraManager>();
 }
 
 void ABaseFighterGameMode::FindPlayerStarts()
@@ -177,7 +177,7 @@ void ABaseFighterGameMode::UpdateHealthbars(int PlayerIndex, float Percent)
 	if (Percent == 0)
 	{
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABaseFighterGameMode::EndRound, 3.0f, false);
-		
+
 	}
 }
 

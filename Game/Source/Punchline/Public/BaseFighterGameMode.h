@@ -14,17 +14,17 @@
 
 
 /**
- * 
+ *
  */
 UCLASS()
 class PUNCHLINE_API ABaseFighterGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
+
 public:
 	ABaseFighterGameMode();
 
-	
+
 	//virtual AActor* ChosePlayerStart(AController* Player) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
@@ -34,7 +34,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	AFightingCameraManager* m_CameraManager;
 
@@ -70,7 +70,7 @@ protected:
 
 	bool HasSpawnedPlayers = false;
 
-private: 
+private:
 	TArray<APlayerController*> Players;
 	TArray<APlayerStart*> PlayerStarts;
 	int32 CurrentRound = 1;

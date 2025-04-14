@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Engine/Datatable.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "BaseGameInstance.generated.h"
 
 
@@ -29,13 +31,25 @@ class PUNCHLINE_API UBaseGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	//UBaseGameInstance();
+	UBaseGameInstance();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gamemode Reference")
 	EGameModeType gameModeType;
 
 	UFUNCTION(BlueprintCallable)
 	void HostSession();
+
+	void SearchForSessionsCompleted(bool _searchCompleted);
+
+	FOnFindSessionsCompleteDelegate SearchForSessionsCompletedDelegate;
+
+	FDelegateHandle SearchForSessionsCompletedHandle;
+
+	TSharedPtr<FOnlineSessionSearch> searchSettings;
+
+
+	UFUNCTION(BlueprintCallable)
+	void SearchForSessions();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player References")
 	ECharacterClass characterClass;
