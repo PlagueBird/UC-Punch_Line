@@ -28,7 +28,7 @@ protected:
 	UInputMappingContext* FighterMappingContext;
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Enhanced Input")
-	UInputAction* InputToMove;
+	UInputAction* InputToMove; 
 
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Enhanced Input")
 	UInputAction* InputToJump;

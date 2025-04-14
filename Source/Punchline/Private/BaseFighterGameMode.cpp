@@ -5,36 +5,54 @@
 
 ABaseFighterGameMode::ABaseFighterGameMode()
 {
-PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABaseFighterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	//FindPlayerStarts();
 
+
+
+	UE_LOG(LogTemp, Warning, TEXT("Game Mode Begin Play"));
+	UGameplayStatics::CreatePlayer(GetWorld(), 1, true);
+
+	if (FightingUIClass)
+	{
+		FightingUIWidget = CreateWidget<UBaseHealthbar>(GetWorld(), FightingUIClass);
+
+
+		if (FightingUIWidget)
+		{
+			FightingUIWidget->AddToViewport();
+		}
+	}
+	if (HasSpawnedPlayers == false)
+	{
+		// Spawn players only if they haven't been spawned yet
+		SpawnPlayers();
+		HasSpawnedPlayers = true;
+	}
+	//SpawnPlayers();
 	InitCameraManager();
+	StartRound();
 }
 
 void ABaseFighterGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
-
+	UE_LOG(LogTemp, Warning, TEXT("Player logged in: %s"), *NewPlayer->GetName());
 	if (!Players.Contains(NewPlayer))
 	{
 		Players.Add(NewPlayer);
 		PlayerWins.Add(NewPlayer, 0);
-		
+
 	}
-	
 
-
-	/*if (Players.Num() == 2)
-	{*/
-		SpawnPlayers();
-		//StartRound();
-	//}
+	/*SpawnPlayers();
+	StartRound();*/
 }
 
 void ABaseFighterGameMode::SpawnPlayers()
@@ -54,6 +72,8 @@ void ABaseFighterGameMode::SpawnPlayers()
 
 	// Get Player 1's controller (assumes at least one player is connected)
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	APlayerController* Player2Controller = UGameplayStatics::GetPlayerController(GetWorld(), 1);
 	UE_LOG(LogTemp, Warning, TEXT("Starting Spawned Players"));
 	if (!PlayerController) return;
 
@@ -71,6 +91,7 @@ void ABaseFighterGameMode::SpawnPlayers()
 	{
 		PlayerController->Possess(PlayerCharacter);
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Player 1 at %s"), *P1SpawnLocation.ToString());
+		PlayerCharacter->SetPlayerIndex(1);  // Set Player Index
 	}
 
 	// --- Spawn Player 2 (Dummy) ---
@@ -86,14 +107,23 @@ void ABaseFighterGameMode::SpawnPlayers()
 
 	if (DummyCharacter)
 	{
-		DummyCharacter->SetActorTickEnabled(false);  // Make it non-responsive
+		if (Player2Controller)
+		{
+
+			Player2Controller->Possess(DummyCharacter);
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("Player 2 Controller not found!"));
+		}
+
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Dummy Character at %s"), *P2SpawnLocation.ToString());
+		DummyCharacter->SetPlayerIndex(2);  // Set Player Index
 	}
 }
 
 void ABaseFighterGameMode::InitCameraManager()
 {
-m_CameraManager = GetWorld()->SpawnActor<AFightingCameraManager>();
+	m_CameraManager = GetWorld()->SpawnActor<AFightingCameraManager>();
 }
 
 void ABaseFighterGameMode::FindPlayerStarts()
@@ -129,5 +159,77 @@ void ABaseFighterGameMode::ResetPlayers()
 			Character->SetActorLocation(PlayerStarts[i]->GetActorLocation());
 			Character->SetActorRotation(FRotator(0, (i == 0) ? 90.f : -90.f, 0));
 		}
+	}
+}
+
+void ABaseFighterGameMode::UpdateHealthbars(int PlayerIndex, float Percent)
+{
+	if (FightingUIWidget)
+	{
+		FightingUIWidget->SetPlayerHealth(PlayerIndex, Percent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FightingUIWidget is not initialized!"));
+	}
+
+	//UE_LOG(LogTemp, Warning, TEXT("Percent: " + ToText(Percent), Percent);
+	if (Percent == 0)
+	{
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ABaseFighterGameMode::EndRound, 3.0f, false);
+
+	}
+}
+
+void ABaseFighterGameMode::StartRound()
+{
+	// Reset players to their starting positions
+	UE_LOG(LogTemp, Warning, TEXT("Round %d"), CurRound);
+	ResetPlayers();
+	// Reset health
+	for (APlayerController* Player : Players)
+	{
+		AAFighterBase* Fighter = Cast<AAFighterBase>(Player->GetPawn());
+		if (Fighter)
+		{
+			Fighter->ResetHealth();
+			UpdateHealthbars(Fighter->GetPlayerIndex(), Fighter->Health / Fighter->MaxHealth);
+		}
+	}
+	IsMatchOver = false;
+}
+
+void ABaseFighterGameMode::EndRound()
+{
+	for (APlayerController* Player : Players)
+	{
+		AAFighterBase* Fighter = Cast<AAFighterBase>(Player->GetPawn());
+		if (Fighter)
+		{
+			if (Fighter->Health <= 0)
+			{
+				if (Fighter->GetPlayerIndex() == 1)
+				{
+					Player1Wins++;
+				}
+				else
+				{
+					Player2Wins++;
+				}
+			}
+		}
+	}
+
+	// Check if the match is over
+	if (Player1Wins >= TotalRounds || Player2Wins >= TotalRounds)
+	{
+		IsMatchOver = true;
+		// Handle match over logic here (e.g., show end screen, reset game, etc.)
+	}
+	else
+	{
+		// Start a new round
+		CurRound++;
+		StartRound();
 	}
 }
