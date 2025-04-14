@@ -1,0 +1,9 @@
+# Design Specs
+## Game Engine
+Our game will be using the Unreal Engine for most things. It is smooth and easy to use with the capacity for free licensing. This is used by many groups including one of the most prolific game design companies, Arc System Works. This largely impacted our decision to pick Unreal instead of Unity or GameMaker Studios.
+
+## Music
+Music will be done custom in FL Studio. Copyright free music may also be used for the purpose of parody or implementation of classical music.
+
+## Server Hosting
+Currently, our group is pursuing a educational license for the tool Snapnet. On the consdition that we cannot, we will make the pivot to Unreal Engine's Replicate. Replicate is free to use. Teammate Anthony Shepard is acting as primary contact as we await further inquiry about an extended license for the expo.

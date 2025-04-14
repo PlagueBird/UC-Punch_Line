@@ -1,0 +1,23 @@
+# Here comes the PUNCHLINE
+Welcome to the PUNCHLINE User Manual. In this manual, you will learn how to play PUNCHLINE and how to operate the settings.
+
+## Game Startup
+Starting PUNCHLINE is as simple as the press of a button! 
+In order to start playing PUNCHLINE, you will purchase/add to your library on the steam store. 
+The Game will open a title screen. Hitting any button will move you to the main menu where you can:
+- Start Arcade Mode (starts an offline game)
+- Create an Online Lobby (starts an online lobby)
+- Settings (change your game settings)
+- Quit to title (go back to title screen)
+
+## Manuals
+[The Controls](Pages/Movement.md) The_Moves is a manual on the inputs and controls of PUNCHLINE.
+[The Roster](Pages/The_Roster.md) The_Roster is a manual on the different characters and their unique actions.
+[Wild Cards](Pages/Wild_Cards.md) Wild_Cards is a manual on the different stage-effecting cards that are applied to each match.
+[Networking](Pages/Networking.md) Networking is a manual on how the networking works and how to establish a match.
+
+## Game Development Credits
+Game Engine: Unreal Engine 4
+Networking: Unreal Engine, Replication
+Models: Developed in Blender
+Manual Writers: Caleb Copley, Anthony Shepard, Zach Brown
