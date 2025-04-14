@@ -71,7 +71,7 @@ void UBaseGameInstance::SearchForSessionsCompleted(bool _searchCompleted) {
 			
 			UE_LOG(LogTemp, Warning, TEXT("Search found  sessions after completing search."), searchSettings->SearchResults.Num());
 
-			if (auto gameMode = Cast<A)
+			//if (auto gameMode = Cast<A)
 		}
 	}
 }
