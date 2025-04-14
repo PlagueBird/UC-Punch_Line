@@ -29,6 +29,8 @@ public:
 	float MaxHealth = 100;
 
 	void SetPlayerIndex(int Index);
+	int GetPlayerIndex() const { return PlayerIndex; }
+	void ResetHealth();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

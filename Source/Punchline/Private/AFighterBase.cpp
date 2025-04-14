@@ -180,9 +180,9 @@ void AAFighterBase::InflictDamage(int Amount)
 {
 	Health -= Amount;
 
-	// Update Health Bar 
-	ABaseFighterGameMode* GM = Cast<ABaseFighterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	GM->UpdateHealthbars(PlayerIndex, Health / MaxHealth);
+	
+	
+	
 
 	if (Health <= 0)
 	{
@@ -192,8 +192,20 @@ void AAFighterBase::InflictDamage(int Amount)
 	{
 		// Play hurt animation or sound
 	}
+	ABaseFighterGameMode* GM = Cast<ABaseFighterGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	GM->UpdateHealthbars(PlayerIndex, Health / MaxHealth);
 }
 
+
+void AAFighterBase::ResetHealth()
+{
+	Health = MaxHealth;
+
+	if (AnimInstance) {
+		AnimInstance->NotifyToReset();
+	}
+	
+}
 // Called to bind functionality to input
 void AAFighterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

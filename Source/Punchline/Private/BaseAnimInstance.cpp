@@ -46,3 +46,11 @@ void UBaseAnimInstance::NotifyToDie_Implementation()
 {
 	IsDead = true;
 }
+
+void UBaseAnimInstance::NotifyToReset_Implementation()
+{
+	IsDead = false;
+	IsPunching = false;
+	IsKicking = false;
+	IsBlocking = false;
+}

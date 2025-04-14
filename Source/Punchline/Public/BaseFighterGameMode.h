@@ -54,6 +54,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UBaseHealthbar* FightingUIWidget;
 
+	// Round System //
+	void StartRound();
+	void EndRound();
+	void ResetRound();
+	//void EndMatch();
+
+	int TotalRounds = 3;
+	int CurRound = 1;
+	int Player1Wins = 0;
+	int Player2Wins = 0;
+
+	bool IsMatchOver = false;
+	FTimerHandle TimerHandle;
+
+	bool HasSpawnedPlayers = false;
+
 private: 
 	TArray<APlayerController*> Players;
 	TArray<APlayerStart*> PlayerStarts;

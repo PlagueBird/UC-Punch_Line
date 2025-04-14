@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
 	void NotifyToDie();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Animation")
+	void NotifyToReset();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* PunchMontage;
