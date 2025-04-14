@@ -31,9 +31,6 @@ public:
 	void SetPlayerIndex(int Index);
 	int GetPlayerIndex() const { return PlayerIndex; }
 	void ResetHealth();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Info")
-	bool FacingRight;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -63,7 +60,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player References")
 	AActor* Hurtbox;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Info")
+	bool FacingRight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerIndex;
@@ -87,9 +85,6 @@ protected:
 	virtual void StopJumping();
 	virtual bool CanJump();
 	virtual void Landed(const FHitResult& Hit) override;
-	//virtual void PossessedBy(AController* Controller) override;
-	virtual void PossessedBy(AController* NewController) override;
-
 	virtual void Move(const FInputActionValue& Value);
 
 	int JumpCount = 0;
@@ -101,13 +96,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Animations")
 	UAnimMontage* PunchKickMontage;
 
-	
+	AActor* OtherPlayer;
 
 	void FaceOtherPlayer();
 
 public:	
 	// Called every frame
-	AActor* OtherPlayer;
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
