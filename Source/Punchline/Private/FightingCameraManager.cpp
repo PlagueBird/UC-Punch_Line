@@ -25,6 +25,7 @@ void AFightingCameraManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 }
 
 
@@ -48,7 +49,7 @@ void AFightingCameraManager::UpdateCamera(float DeltaTime)
 
 FVector AFightingCameraManager::CalculateCameraPosition(const FVector& Player1Location, const FVector& Player2Location)
 {
-    FVector MidPoint = (Player1Location + Player2Location) / 2.0f;
+    FVector MidPoint = (Player1Location - Player2Location);
     float Distance = FVector::Dist(Player1Location, Player2Location);
 
     float CameraDistance = FMath::Clamp(Distance, MinCameraDistance, MaxCameraDistance);
