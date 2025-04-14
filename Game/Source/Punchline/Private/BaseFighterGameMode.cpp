@@ -13,7 +13,20 @@ void ABaseFighterGameMode::BeginPlay()
 	Super::BeginPlay();
 	
 	//FindPlayerStarts();
+	UWorld* WorldContext = GetWorld();
 
+	if (!WorldContext) return;
+
+	// Loop through all PlayerControllers
+	for (FConstPlayerControllerIterator Iterator = WorldContext->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PC = Iterator->Get();
+		if (PC)
+		{
+			int32 ControllerId = UGameplayStatics::GetPlayerControllerID(PC);
+			UE_LOG(LogTemp, Warning, TEXT("Found PlayerController: %s | ID: %d"), *PC->GetName(), ControllerId);
+		}
+	}
 	
 
 	UE_LOG(LogTemp, Warning, TEXT("Game Mode Begin Play"));
@@ -29,13 +42,9 @@ void ABaseFighterGameMode::BeginPlay()
 			FightingUIWidget->AddToViewport();
 		}
 	}
-	if (HasSpawnedPlayers == false)
-	{
-		// Spawn players only if they haven't been spawned yet
-		SpawnPlayers();
-		HasSpawnedPlayers = true;
-	}
-	//SpawnPlayers();
+	
+	
+	SpawnPlayers();
 	InitCameraManager();
 	StartRound();
 }
@@ -48,15 +57,19 @@ void ABaseFighterGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		Players.Add(NewPlayer);
 		PlayerWins.Add(NewPlayer, 0);
-		
+
 	}
 	
-	/*SpawnPlayers();
-	StartRound();*/
 }
 
 void ABaseFighterGameMode::SpawnPlayers()
 {
+	if (HasSpawnedPlayers)
+	{
+		return;
+	}
+
+
 	if (!FighterBlueprintClass) return;  // Ensure Blueprint class is assigned
 
 	if (PlayerStarts.Num() < 2)
@@ -74,12 +87,13 @@ void ABaseFighterGameMode::SpawnPlayers()
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
 	APlayerController* Player2Controller = UGameplayStatics::GetPlayerController(GetWorld(), 1);
-	UE_LOG(LogTemp, Warning, TEXT("Starting Spawned Players"));
+	
+
 	if (!PlayerController) return;
 
 	// --- Spawn Player 1 (Human) ---
 	FVector P1SpawnLocation = PlayerStarts[0]->GetActorLocation();
-	FRotator P1SpawnRotation = FRotator(0, 90.f, 0);
+	FRotator P1SpawnRotation = FRotator(0, 180, 0);
 
 	AAFighterBase* PlayerCharacter = GetWorld()->SpawnActor<AAFighterBase>(
 		FighterBlueprintClass,
@@ -93,10 +107,13 @@ void ABaseFighterGameMode::SpawnPlayers()
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Player 1 at %s"), *P1SpawnLocation.ToString());
 		PlayerCharacter->SetPlayerIndex(1);  // Set Player Index
 	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Player Character not possessed"))
+	}
 
 	// --- Spawn Player 2 (Dummy) ---
 	FVector P2SpawnLocation = PlayerStarts[1]->GetActorLocation();
-	FRotator P2SpawnRotation = FRotator(0, -90.f, 0);
+	FRotator P2SpawnRotation = FRotator(0, 0, 0);
 
 	// Option 1: Static Dummy (No AI)
 	AAFighterBase* DummyCharacter = GetWorld()->SpawnActor<AAFighterBase>(
@@ -119,6 +136,9 @@ void ABaseFighterGameMode::SpawnPlayers()
 		UE_LOG(LogTemp, Warning, TEXT("Spawned Dummy Character at %s"), *P2SpawnLocation.ToString());
 		DummyCharacter->SetPlayerIndex(2);  // Set Player Index
 	}
+
+	DummyCharacter->OtherPlayer = PlayerCharacter;
+	PlayerCharacter->OtherPlayer = DummyCharacter;
 }
 
 void ABaseFighterGameMode::InitCameraManager()
@@ -139,7 +159,7 @@ void ABaseFighterGameMode::FindPlayerStarts()
 		if (PlayerStart)
 		{
 			PlayerStarts.Add(PlayerStart); // Store PlayerStart references
-			UE_LOG(LogTemp, Warning, TEXT("Player Start: %s"), *PlayerStart->GetName());
+			//UE_LOG(LogTemp, Warning, TEXT("Player Start: %s"), *PlayerStart->GetName());
 		}
 	}
 
@@ -187,14 +207,18 @@ void ABaseFighterGameMode::StartRound()
 	UE_LOG(LogTemp, Warning, TEXT("Round %d"), CurRound);
 	ResetPlayers();
 	// Reset health
+	int test = 0;
 	for (APlayerController* Player : Players)
 	{
+		
 		AAFighterBase* Fighter = Cast<AAFighterBase>(Player->GetPawn());
 		if (Fighter)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("RESETING HEALTH: %d"), test)
 			Fighter->ResetHealth();
 			UpdateHealthbars(Fighter->GetPlayerIndex(), Fighter->Health / Fighter->MaxHealth);
 		}
+		test++;
 	}
 	IsMatchOver = false;
 }
