@@ -52,6 +52,7 @@ void AAFighterBase::BeginPlay()
 		if (InputSubsystem)
 		{
 			InputSubsystem->AddMappingContext(FighterMappingContext, 0);
+			UE_LOG(LogTemp, Warning, TEXT("Player Controller found"));
 		}
 		else
 		{
@@ -77,6 +78,63 @@ void AAFighterBase::BeginPlay()
 	}
 }
 
+//void AAFighterBase::PossessedBy(AController* Controller)
+//{
+//	Super::PossessedBy(Controller);
+//
+//	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+//
+//	if (PlayerController)
+//	{
+//		UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
+//			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+//
+//		if (InputSubsystem)
+//		{
+//			InputSubsystem->AddMappingContext(FighterMappingContext, 0);
+//			UE_LOG(LogTemp, Warning, TEXT("Player Controller found"));
+//		}
+//		else
+//		{
+//			UE_LOG(LogTemp, Warning, TEXT("No Input Subsystem found"));
+//		}
+//	}
+//	else
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("No Player Controller found"));
+//	}
+//}
+
+void AAFighterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UE_LOG(LogTemp, Warning, TEXT("Character %s possessed by %s"), *GetName(), *NewController->GetName());
+
+	// Add any custom behavior when the character is possessed here
+	APlayerController* PlayerController = Cast<APlayerController>(NewController);
+
+	if (NewController)
+	{
+		UEnhancedInputLocalPlayerSubsystem* InputSubsystem =
+			ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+
+		if (InputSubsystem)
+		{
+			InputSubsystem->AddMappingContext(FighterMappingContext, 0);
+			UE_LOG(LogTemp, Warning, TEXT("Player Controller found"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No Input Subsystem found"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Player Controller found"));
+	}
+}
+
 void AAFighterBase::Punch()
 {
 	if (GetMesh()->GetAnimInstance())
@@ -99,6 +157,7 @@ void AAFighterBase::Kick()
 		
 		// Attempting for this to be right
 		AnimInstance->NotifyToKick();
+		InflictDamage(50);
 		UE_LOG(LogTemp, Warning, TEXT("Punching!"));
 	}
 }
@@ -106,10 +165,8 @@ void AAFighterBase::Kick()
 void AAFighterBase::Block()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Default Blocking"));
-	AnimInstance->NotifyToDie();
-	Health = 0;
+	InflictDamage(10);
 }
-
 
 void AAFighterBase::Die()
 {
@@ -179,10 +236,6 @@ void AAFighterBase::Tick(float DeltaTime)
 void AAFighterBase::InflictDamage(int Amount)
 {
 	Health -= Amount;
-
-	
-	
-	
 
 	if (Health <= 0)
 	{
