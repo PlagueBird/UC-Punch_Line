@@ -29,3 +29,6 @@ Our game emphasizes a middle-ground of those prior two groups. A game that is sa
 - UI vs Backend
 - Frame Data / Response Time
 - Dynamically Operating Systems
+
+## Abstract
+Project PUNCHLINE is the prototype for an easy access fighting game meant to teach. The game is currently in a spot where it still requires a lot of work but such is the way with fighting games. Currently, PUNCHLINE needs a lot of work. The models are created but have gone unimplemented and the network was successful but only up until a certain point where the code was overwritten. The project still has a lot of promise and each of us has left the bones for future functionality. Caleb Copley and Anthony Shepard plan on adopting the project and founding a dev studio to polish and push out PUNCHLINE.
