@@ -33,3 +33,10 @@
 - **Controller Input Testing (2 hrs):** Verifying input handling for both keyboard and gamepad and resolving input recognition issues.
 
 # Anthony Shepard
+#### **1. Learning - 35 hours**
+- **Netcode (15 hrs)** Researching how netcode works and methods for its implementation, sources including YouTube, StackOverflow, and various other online sources.
+- **Unreal Engine Blueprints, Widgets, and C++ Intergation (20 hrs)** Learning how to use the various tools in Unreal through documentation and online tutorials, largely through YouTube.
+#### **2. Development - 40 hours**
+- **Menu Frontend (12 hrs)** Creating Widgets and Blueprints for menu display and proper flow between menus.
+-  **Menu Backend (12 hrs)** Creating C++ Integration of GameInstances and GameModes for core game logic to start the game and connect between menus and the active game.
+-  **Networking (16 hrs)** Integrating C++ classes for network hosting and creating both game instances and sessions for online play, implementing search for online sessions, creating functionality for listing current available online sessions.
